@@ -1,5 +1,11 @@
 # go-boleto-utils
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/fonini/go-boleto-utils)](https://pkg.go.dev/github.com/fonini/go-boleto-utils)
+[![Test Status](https://github.com/fonini/go-boleto-utils/workflows/tests/badge.svg)](https://github.com/fonini/go-boleto-utils/actions?query=workflow%3Atests)
+[![codecov](https://codecov.io/github/fonini/go-boleto-utils/graph/badge.svg?token=L8ZSJUCHFJ)](https://codecov.io/github/fonini/go-boleto-utils)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fonini/go-boleto-utils?force=true)](https://goreportcard.com/report/github.com/fonini/go-boleto-utils)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Objective
 
 This project aims to provide functionality for validation and parsing of Brazilian bank slips (boletos).
