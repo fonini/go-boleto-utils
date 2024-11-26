@@ -6,22 +6,27 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/fonini/go-boleto-utils?force=true)](https://goreportcard.com/report/github.com/fonini/go-boleto-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Objective
+## Overview
 
-This project aims to provide functionality for validation and parsing of Brazilian bank slips (boletos).
+`go-boleto-utils` is a comprehensive Go library designed to simplify working with Brazilian bank slips (boletos). This utility package provides robust parsing and validation functionalities for digitable lines, making it easier for developers to integrate boleto-related operations into their Go applications.
+
+## Prerequisites
+
+- Go 1.16 or higher
+- Basic understanding of Brazilian banking document structures
 
 ## Installation
 
-To install this project, you can use the following command:
+Install the library using Go modules with the following commands:
 
 ```sh
 go get -u github.com/fonini/go-boleto-utils/parser
 go get -u github.com/fonini/go-boleto-utils/validator
 ```
 
-## Usage of Boleto Parser
+## Boleto Parser Usage
 
-You can use the parser as follows:
+The parser allows you to extract comprehensive details from a boleto's digitable line:
 
 ```go
 package main
@@ -34,66 +39,77 @@ import (
 func main() {
     digitableLine := "34191.75124 34567.871230 41234.560005 8 92850000026035"
     result, err := parser.Parse(digitableLine)
-
     if err != nil {
         fmt.Println("Error parsing the digitable line:", err)
         return
     }
-
-    fmt.Println(result)
-
-    // Output: {"IssuerBankCode":"341","IssuerBankName":"Itaú Unibanco S.A.","Currency":9,"IssuerReserved1":"17512","CheckDigit1":4,"IssuerReserved2":"3456787123","CheckDigit2":0,"IssuerReserved3":"4123456000","CheckDigit3":5,"GeneralCheckDigit":8,"DueDate":"2023-03-10T00:00:00Z","Amount":260.35}
+    
+    fmt.Printf("Bank: %s (%s)\n", result.IssuerBankName, result.IssuerBankCode)
+    fmt.Printf("Amount: R$ %.2f\n", result.Amount)
+    fmt.Printf("Due Date: %s\n", result.DueDate.Format("2006-01-02"))
 }
 ```
 
-## Usage of Boleto Validator
+### Parser Output Fields
 
-You can use the validator as follows:
+- `IssuerBankCode`: Numeric code of the issuing bank
+- `IssuerBankName`: Name of the issuing bank
+- `Currency`: Monetary representation code
+- `DueDate`: Expiration date of the bank slip
+- `Amount`: Total amount of the bank slip
+
+## Boleto Validator Usage
+
+Quickly validate the integrity of a boleto's digitable line:
 
 ```go
 package main
 
 import (
-    "fmt"
-    "github.com/fonini/go-boleto-utils/validator"
+	"fmt"
+	"github.com/fonini/go-boleto-utils/validator"
 )
 
 func main() {
-    digitableLine := "34191.75124 34567.871230 41234.560005 8 92850000026035"
-    isValid := validator.Validate(digitableLine)
+	digitableLine := "34191.75124 34567.871230 41234.560005 8 92850000026035"
 
-    if isValid {
-        fmt.Println("The boleto is valid")
-    } else {
-        fmt.Println("The boleto is not valid")
-    }
+	if validator.Validate(digitableLine) {
+		fmt.Println("✅ The boleto is valid")
+	} else {
+		fmt.Println("❌ The boleto is not valid")
+	}
 }
 ```
 
-## Running Tests
+## Testing
 
-To run the tests for this project, you can use the following command:
+Run comprehensive tests using the following commands:
 
 ```sh
+# Run all tests
 go test ./...
-```
 
-This command will run all the tests in the project, including those for the parser and validator packages.
-
-If you want to run a specific test file or package, you can specify the path:
-
-```sh
+# Run tests for a specific package
 go test ./validator
+
+# Run tests with verbose output
+go test -v ./...
 ```
 
-Or to run tests in a specific file:
+## Supported Banks
 
-```sh
-go test ./validator/validator_test.go
-```
+While the library aims to support multiple Brazilian banks, please check the documentation for the most up-to-date list of supported institutions.
 
-Make sure to have Go installed and properly configured in your environment to run the tests correctly.
+## Limitations
+
+- The library focuses on parsing and validation
+- Does not handle boleto payment or generation
+- Requires well-formed digitable lines
 
 ## License
 
-This project is licensed under the terms of the MIT license. See the `LICENSE` file for more details.
+This project is licensed under the MIT License. See the `LICENSE` file for complete details.
+
+## Contact
+
+For issues, questions, or contributions, please open an issue on the GitHub repository.
