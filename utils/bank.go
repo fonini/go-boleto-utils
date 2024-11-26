@@ -2,6 +2,8 @@ package utils
 
 import "time"
 
+type BoletoCodeType string
+
 const BaseDate = "1997-10-07 00:00:00"
 
 type Boleto struct {
@@ -17,6 +19,7 @@ type Boleto struct {
 	GeneralCheckDigit int
 	DueDate           time.Time
 	Amount            float64
+	CodeType          BoletoCodeType
 }
 
 var Banks = map[string]string{
