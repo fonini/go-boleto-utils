@@ -8,13 +8,11 @@ import (
 	"time"
 )
 
-type BoletoCodeType string
-
 const (
-	DigitableLine  BoletoCodeType = "DIGITABLE_LINE"
-	Barcode        BoletoCodeType = "BARCODE"
-	Unknown        BoletoCodeType = "UNKNOWN"
-	BaseDateFormat                = "2006-01-02 15:04:05"
+	DigitableLine  utils.BoletoCodeType = "DIGITABLE_LINE"
+	Barcode        utils.BoletoCodeType = "BARCODE"
+	Unknown        utils.BoletoCodeType = "UNKNOWN"
+	BaseDateFormat                      = "2006-01-02 15:04:05"
 )
 
 // Parse parses a digitable line or a barcode into a Boleto struct
@@ -31,10 +29,18 @@ func Parse(code string) (*utils.Boleto, error) {
 		line = ConvertBarcodeToDigitableLine(line)
 	}
 
-	return parseDigitableLine(line)
+	boleto, err := parseDigitableLine(line)
+
+	if err != nil {
+		return nil, err
+	}
+
+	boleto.CodeType = codeType
+
+	return boleto, nil
 }
 
-func GetCodeType(code string) (BoletoCodeType, error) {
+func GetCodeType(code string) (utils.BoletoCodeType, error) {
 	code = utils.OnlyNumbers(code)
 
 	switch len(code) {

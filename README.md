@@ -8,7 +8,7 @@
 
 ## Overview
 
-`go-boleto-utils` is a comprehensive Go library designed to simplify working with Brazilian bank slips (boletos). This utility package provides robust parsing and validation functionalities for digitable lines, making it easier for developers to integrate boleto-related operations into their Go applications.
+`go-boleto-utils` is a comprehensive Go library designed to simplify working with Brazilian bank slips (boletos). This utility package provides robust parsing and validation functionalities for digitable lines and barcodes, making it easier for developers to integrate boleto-related operations into their Go applications.
 
 ## Prerequisites
 
@@ -26,8 +26,9 @@ go get -u github.com/fonini/go-boleto-utils/validator
 
 ## Boleto Parser Usage
 
-The parser allows you to extract comprehensive details from a boleto's digitable line:
+The parser allows you to extract comprehensive details from a boleto's digitable line or barcode:
 
+### Using digitable line
 ```go
 package main
 
@@ -47,6 +48,32 @@ func main() {
     fmt.Printf("Bank: %s (%s)\n", result.IssuerBankName, result.IssuerBankCode)
     fmt.Printf("Amount: R$ %.2f\n", result.Amount)
     fmt.Printf("Due Date: %s\n", result.DueDate.Format("2006-01-02"))
+    fmt.Printf("Code Type: %s\n", result.CodeType) // DIGITABLE_LINE
+}
+```
+
+### Using barcode
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/fonini/go-boleto-utils/parser"
+)
+
+func main() {
+    barCode := "74898992100000845361121577703702280000282105"
+    result, err := parser.Parse(barCode)
+    if err != nil {
+        fmt.Println("Error parsing the barcode:", err)
+        return
+    }
+
+    fmt.Printf("Bank: %s (%s)\n", result.IssuerBankName, result.IssuerBankCode)
+    fmt.Printf("Amount: R$ %.2f\n", result.Amount)
+    fmt.Printf("Due Date: %s\n", result.DueDate.Format("2006-01-02"))
+    fmt.Printf("Code Type: %s\n", result.CodeType) // BARCODE
 }
 ```
 
@@ -57,6 +84,7 @@ func main() {
 - `Currency`: Monetary representation code
 - `DueDate`: Expiration date of the bank slip
 - `Amount`: Total amount of the bank slip
+- `CodeType`: Type of the input code (DIGITABLE_LINE, BARCODE or UNKNOWN)
 
 ## Boleto Validator Usage
 
