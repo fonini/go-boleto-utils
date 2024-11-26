@@ -2,6 +2,7 @@ package utils
 
 import (
 	"regexp"
+	"strconv"
 )
 
 // Substr returns the portion of string specified by the start and length parameters.
@@ -43,4 +44,33 @@ func Mod10CheckDigit(digits string) bool {
 	}
 
 	return checksum%10 == 0
+}
+
+func CalculateVerificationDigit(block string) string {
+	sum := 0
+	multiplier := 2
+
+	// Iterate through digits from right to left
+	for i := len(block) - 1; i >= 0; i-- {
+		digit, _ := strconv.Atoi(string(block[i]))
+		result := digit * multiplier
+
+		// If result > 9, sum its digits
+		if result > 9 {
+			result = (result / 10) + (result % 10)
+		}
+
+		sum += result
+
+		// Alternate multiplier between 2 and 1
+		multiplier = 3 - multiplier
+	}
+
+	// Calculate check digit
+	remainder := sum % 10
+	if remainder == 0 {
+		return "0"
+	}
+
+	return strconv.Itoa(10 - remainder)
 }

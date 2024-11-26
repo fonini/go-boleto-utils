@@ -6,8 +6,8 @@ import (
 	"github.com/fonini/go-boleto-utils/utils"
 )
 
-func Validate(digitableLine string) bool {
-	boleto, err := parser.Parse(digitableLine)
+func Validate(code string) bool {
+	boleto, err := parser.Parse(code)
 
 	if err != nil {
 		return false
