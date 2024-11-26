@@ -2,19 +2,52 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"github.com/fonini/go-boleto-utils/utils"
 	"strconv"
 	"time"
 )
 
-// Parse parses a digitable line into a Boleto struct
-func Parse(digitableLine string) (*utils.Boleto, error) {
-	line := utils.OnlyNumbers(digitableLine)
+type BoletoCodeType string
 
-	if len(line) != 47 {
-		return nil, errors.New("the typeable line must be 47 characters long")
+const (
+	DigitableLine  BoletoCodeType = "DIGITABLE_LINE"
+	Barcode        BoletoCodeType = "BARCODE"
+	Unknown        BoletoCodeType = "UNKNOWN"
+	BaseDateFormat                = "2006-01-02 15:04:05"
+)
+
+// Parse parses a digitable line or a barcode into a Boleto struct
+func Parse(code string) (*utils.Boleto, error) {
+	line := utils.OnlyNumbers(code)
+
+	codeType, err := GetCodeType(line)
+
+	if err != nil {
+		return nil, err
 	}
 
+	if codeType == Barcode {
+		line = ConvertBarcodeToDigitableLine(line)
+	}
+
+	return parseDigitableLine(line)
+}
+
+func GetCodeType(code string) (BoletoCodeType, error) {
+	code = utils.OnlyNumbers(code)
+
+	switch len(code) {
+	case 44:
+		return Barcode, nil
+	case 46, 47, 48:
+		return DigitableLine, nil
+	default:
+		return Unknown, errors.New("unknown code")
+	}
+}
+
+func parseDigitableLine(line string) (*utils.Boleto, error) {
 	var boleto utils.Boleto
 
 	boleto.IssuerBankCode = utils.Substr(line, 0, 3)
@@ -33,18 +66,56 @@ func Parse(digitableLine string) (*utils.Boleto, error) {
 
 	boleto.GeneralCheckDigit, _ = strconv.Atoi(utils.Substr(line, 32, 1))
 
-	dueDate, _ := strconv.Atoi(utils.Substr(line, 33, 4))
-	dateFactor, err := time.Parse("2006-01-02 15:04:05", utils.BaseDate)
+	dueDate, err := calculateDueDate(utils.Substr(line, 33, 4))
 	if err != nil {
 		return nil, err
 	}
-	boleto.DueDate = dateFactor.AddDate(0, 0, dueDate)
+	boleto.DueDate = dueDate
 
-	amount, err := strconv.ParseFloat(utils.Substr(line, 37, 10), 64)
+	amount, err := parseAmount(utils.Substr(line, 37, 10))
 	if err != nil {
 		return nil, err
 	}
-	boleto.Amount = amount / 100
+	boleto.Amount = amount
 
 	return &boleto, nil
+}
+
+func calculateDueDate(dueDateStr string) (time.Time, error) {
+	dueDate, err := strconv.Atoi(dueDateStr)
+	if err != nil {
+		return time.Time{}, err
+	}
+	dateFactor, err := time.Parse(BaseDateFormat, utils.BaseDate)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return dateFactor.AddDate(0, 0, dueDate), nil
+}
+
+func parseAmount(amountStr string) (float64, error) {
+	amount, err := strconv.ParseFloat(amountStr, 64)
+	if err != nil {
+		return 0, err
+	}
+	return amount / 100, nil
+}
+
+func ConvertBarcodeToDigitableLine(barcode string) string {
+	block1 := barcode[0:4] + barcode[19:24]
+	cd1 := utils.CalculateVerificationDigit(block1)
+
+	block2 := barcode[24:34]
+	cd2 := utils.CalculateVerificationDigit(block2)
+
+	block3 := barcode[34:44]
+	cd3 := utils.CalculateVerificationDigit(block3)
+
+	return fmt.Sprintf(
+		"%s%s%s%s%s%s%s%s%s%s%s",
+		block1[:5], block1[5:], cd1,
+		block2[:5], block2[5:], cd2,
+		block3[:5], block3[5:], cd3,
+		barcode[4:5], barcode[5:19],
+	)
 }
