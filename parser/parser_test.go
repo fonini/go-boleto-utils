@@ -210,3 +210,38 @@ func TestValues_Parse(t *testing.T) {
 		testValue(t, tt.input, tt.want)
 	}
 }
+
+func TestValues_GetBoletoType(t *testing.T) {
+	tests := []struct {
+		input string
+		want  utils.BoletoType
+	}{
+		{"826700000035 645607980002 010002351038 822024116714",
+			utils.BoletoType("SANITATION"),
+		},
+		{
+			"836800000033 380600863225 535337514090 100168807509",
+			utils.BoletoType("ELECTRICITY_AND_GAS"),
+		},
+		{
+			"85860000000 4 83740385242 0 43070124241 5 85141630306 0",
+			utils.BoletoType("GOVERNMENT_AGENCIES"),
+		},
+		{
+			"856500000026 056505152027 411292024030 335182000000",
+			utils.BoletoType("GOVERNMENT_AGENCIES"),
+		},
+		{
+			"846800000008 550000791008 011193989719 924101544345",
+			utils.BoletoType("TELECOMMUNICATIONS"),
+		},
+	}
+
+	for _, tt := range tests {
+		msg := GetBoletoType(tt.input)
+
+		if tt.want != msg {
+			t.Fatalf(`GetBoletoType("%s") = %q, want match for %#q`, tt.input, msg, tt.want)
+		}
+	}
+}

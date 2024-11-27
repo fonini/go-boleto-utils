@@ -109,6 +109,30 @@ func main() {
 }
 ```
 
+## Helper methods
+
+### `GetBoletoType`
+
+The `GetBoletoType` method is responsible for determining the type of boleto (a type of Brazilian payment slip) based on the provided boleto code. This functionality is essential for the categorization and proper processing of boletos in systems dealing with various types of payments.
+
+#### Method Signature
+
+```go
+func GetBoletoType(input string) utils.BoletoType
+```
+
+#### Parameters
+
+- `input` (`string`): The boleto code to be analyzed in order to determine its type.
+
+#### Returns
+
+- (`utils.BoletoType`): Returns a value of type `BoletoType` indicating the category of the boleto. Possible types include, but are not limited to:
+    - `SANITATION`
+    - `ELECTRICITY_AND_GAS`
+    - `GOVERNMENT_AGENCIES`
+    - `TELECOMMUNICATIONS`
+
 ## Testing
 
 Run comprehensive tests using the following commands:

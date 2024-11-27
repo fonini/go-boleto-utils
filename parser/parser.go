@@ -9,10 +9,21 @@ import (
 )
 
 const (
-	DigitableLine  utils.BoletoCodeType = "DIGITABLE_LINE"
-	Barcode        utils.BoletoCodeType = "BARCODE"
-	Unknown        utils.BoletoCodeType = "UNKNOWN"
-	BaseDateFormat                      = "2006-01-02 15:04:05"
+	DigitableLine utils.BoletoCodeType = "DIGITABLE_LINE"
+	Barcode       utils.BoletoCodeType = "BARCODE"
+	Unknown       utils.BoletoCodeType = "UNKNOWN"
+
+	CreditCard         utils.BoletoType = "CREDIT_CARD"
+	CityHalls          utils.BoletoType = "CITY_HALLS"
+	Sanitation         utils.BoletoType = "SANITATION"
+	ElectricityAndGas  utils.BoletoType = "ELECTRICITY_AND_GAS"
+	Telecommunications utils.BoletoType = "TELECOMMUNICATIONS"
+	GovernmentAgencies utils.BoletoType = "GOVERNMENT_AGENCIES"
+	PaymentBooklets    utils.BoletoType = "PAYMENT_BOOKLETS"
+	TrafficFines       utils.BoletoType = "TRAFFIC_FINES"
+	Bank               utils.BoletoType = "BANK"
+
+	BaseDateFormat = "2006-01-02 15:04:05"
 )
 
 // Parse parses a digitable line or a barcode into a Boleto struct
@@ -51,6 +62,32 @@ func GetCodeType(code string) (utils.BoletoCodeType, error) {
 	default:
 		return Unknown, errors.New("unknown code")
 	}
+}
+
+func GetBoletoType(code string) utils.BoletoType {
+	code = utils.OnlyNumbers(code)
+
+	if code[len(code)-14:] == "00000000000000" || utils.Substr(code, 5, 14) == "00000000000000" {
+		return CreditCard
+	} else if utils.Substr(code, 0, 1) == "8" {
+		if utils.Substr(code, 1, 1) == "1" {
+			return CityHalls
+		} else if utils.Substr(code, 1, 1) == "2" {
+			return Sanitation
+		} else if utils.Substr(code, 1, 1) == "3" {
+			return ElectricityAndGas
+		} else if utils.Substr(code, 1, 1) == "4" {
+			return Telecommunications
+		} else if utils.Substr(code, 1, 1) == "5" {
+			return GovernmentAgencies
+		} else if utils.Substr(code, 1, 1) == "6" || utils.Substr(code, 1, 1) == "9" {
+			return PaymentBooklets
+		} else if utils.Substr(code, 1, 1) == "7" {
+			return TrafficFines
+		}
+	}
+
+	return Bank
 }
 
 func parseDigitableLine(line string) (*utils.Boleto, error) {
@@ -92,6 +129,7 @@ func calculateDueDate(dueDateStr string) (time.Time, error) {
 	if err != nil {
 		return time.Time{}, err
 	}
+
 	dateFactor, err := time.Parse(BaseDateFormat, utils.BaseDate)
 	if err != nil {
 		return time.Time{}, err
