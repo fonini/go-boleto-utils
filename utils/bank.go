@@ -4,6 +4,8 @@ import "time"
 
 type BoletoCodeType string
 
+type BoletoType string
+
 const BaseDate = "1997-10-07 00:00:00"
 
 type Boleto struct {
