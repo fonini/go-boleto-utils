@@ -21,7 +21,7 @@ const (
 	GovernmentAgencies utils.BoletoType = "GOVERNMENT_AGENCIES"
 	PaymentBooklets    utils.BoletoType = "PAYMENT_BOOKLETS"
 	TrafficFines       utils.BoletoType = "TRAFFIC_FINES"
-	ExclusiveBankUse   utils.BoletoType = "EXCLUSIVE_BANK_USE"
+	Bank               utils.BoletoType = "BANK"
 
 	BaseDateFormat = "2006-01-02 15:04:05"
 )
@@ -87,7 +87,7 @@ func GetBoletoType(code string) utils.BoletoType {
 		}
 	}
 
-	return PaymentBooklets
+	return Bank
 }
 
 func parseDigitableLine(line string) (*utils.Boleto, error) {
