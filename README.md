@@ -113,25 +113,55 @@ func main() {
 
 ### `GetBoletoType`
 
-The `GetBoletoType` method is responsible for determining the type of boleto (a type of Brazilian payment slip) based on the provided boleto code. This functionality is essential for the categorization and proper processing of boletos in systems dealing with various types of payments.
-
-#### Method Signature
+Determines boleto type.
 
 ```go
-func GetBoletoType(input string) utils.BoletoType
+func GetBoletoType(code string) utils.BoletoType
 ```
 
-#### Parameters
+#### Returns
+- `CREDIT_CARD`
+- `CITY_HALLS`
+- `SANITATION`
+- `ELECTRICITY_AND_GAS`
+- `GOVERNMENT_AGENCIES`
+- `TELECOMMUNICATIONS`
+- `PAYMENT_BOOKLETS`
+- `TRAFFIC_FINES`
+- `BANK`
 
-- `input` (`string`): The boleto code to be analyzed in order to determine its type.
+```go
+code := "00190500954014481606906809350314337370000000100"
+boletoType := GetBoletoType(code)
+
+fmt.Println(boletoType) // BANK
+```
+
+
+### `GetCodeType`
+
+Identifies payment code type (digitable line or barcode).
+
+```go
+func GetCodeType(code string) (utils.BoletoCodeType, error)
+```
 
 #### Returns
+- `DIGITABLE_LINE`
+- `BARCODE`
+- `UNKNOWN`
 
-- (`utils.BoletoType`): Returns a value of type `BoletoType` indicating the category of the boleto. Possible types include, but are not limited to:
-    - `SANITATION`
-    - `ELECTRICITY_AND_GAS`
-    - `GOVERNMENT_AGENCIES`
-    - `TELECOMMUNICATIONS`
+##### Example
+
+```go
+code := "00190500954014481606906809350314337370000000100"
+codeType, err := GetCodeType(code)
+if err != nil {
+    fmt.Println("Error determining code type:", err)
+} else {
+    fmt.Printf("The code type is: %s\n", codeType) // DIGITABLE_LINE
+}
+```
 
 ## Testing
 
