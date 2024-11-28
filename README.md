@@ -6,16 +6,23 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/fonini/go-boleto-utils?force=true)](https://goreportcard.com/report/github.com/fonini/go-boleto-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Overview
+## 📖 Overview
 
 `go-boleto-utils` is a comprehensive Go library designed to simplify working with Brazilian bank slips (boletos). This utility package provides robust parsing and validation functionalities for digitable lines and barcodes, making it easier for developers to integrate boleto-related operations into their Go applications.
 
-## Prerequisites
+## 🛠 Features
+
+- 🔍 Parse digitable lines and barcodes
+- ✅ Validate boleto integrity
+- 🏦 Identify bank and boleto types
+- 🔢 Extract key financial details
+
+## 📋 Prerequisites
 
 - Go 1.16 or higher
 - Basic understanding of Brazilian banking document structures
 
-## Installation
+## 🚀 Installation
 
 Install the library using Go modules with the following commands:
 
@@ -24,11 +31,10 @@ go get -u github.com/fonini/go-boleto-utils/parser
 go get -u github.com/fonini/go-boleto-utils/validator
 ```
 
-## Boleto Parser Usage
+## 🧰 Usage Examples
 
-The parser allows you to extract comprehensive details from a boleto's digitable line or barcode:
+### 1. Parsing a Digitable Line
 
-### Using digitable line
 ```go
 package main
 
@@ -52,7 +58,7 @@ func main() {
 }
 ```
 
-### Using barcode
+### 2. Using barcode
 
 ```go
 package main
@@ -86,7 +92,7 @@ func main() {
 - `Amount`: Total amount of the bank slip
 - `CodeType`: Type of the input code (DIGITABLE_LINE, BARCODE or UNKNOWN)
 
-## Boleto Validator Usage
+### 3. Validating a Boleto
 
 Quickly validate the integrity of a boleto's digitable line:
 
@@ -109,7 +115,7 @@ func main() {
 }
 ```
 
-## Helper methods
+## 🔬 Helper methods
 
 ### `GetBoletoType`
 
@@ -163,7 +169,7 @@ if err != nil {
 }
 ```
 
-## Testing
+## 🧪 Testing
 
 Run comprehensive tests using the following commands:
 
@@ -178,20 +184,20 @@ go test ./validator
 go test -v ./...
 ```
 
-## Supported Banks
+## 🏛️ Supported Banks
 
 While the library aims to support multiple Brazilian banks, please check the documentation for the most up-to-date list of supported institutions.
 
-## Limitations
+## 🚧 Limitations
 
-- The library focuses on parsing and validation
+- Focuses on parsing and validation
 - Does not handle boleto payment or generation
 - Requires well-formed digitable lines
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for complete details.
 
-## Contact
+## 📞 Contact
 
 For issues, questions, or contributions, please open an issue on the GitHub repository.
