@@ -57,6 +57,10 @@ func TestValues_Validate(t *testing.T) {
 		{"34191990600000005001092664672997197273480000",
 			true,
 		},
+		{
+			input: "2325435435",
+			want:  false,
+		},
 	}
 
 	for _, tt := range tests {

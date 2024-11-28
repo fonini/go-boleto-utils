@@ -13,16 +13,6 @@ const (
 	Barcode       utils.BoletoCodeType = "BARCODE"
 	Unknown       utils.BoletoCodeType = "UNKNOWN"
 
-	CreditCard         utils.BoletoType = "CREDIT_CARD"
-	CityHalls          utils.BoletoType = "CITY_HALLS"
-	Sanitation         utils.BoletoType = "SANITATION"
-	ElectricityAndGas  utils.BoletoType = "ELECTRICITY_AND_GAS"
-	Telecommunications utils.BoletoType = "TELECOMMUNICATIONS"
-	GovernmentAgencies utils.BoletoType = "GOVERNMENT_AGENCIES"
-	PaymentBooklets    utils.BoletoType = "PAYMENT_BOOKLETS"
-	TrafficFines       utils.BoletoType = "TRAFFIC_FINES"
-	Bank               utils.BoletoType = "BANK"
-
 	BaseDateFormat = "2006-01-02 15:04:05"
 )
 
@@ -68,26 +58,29 @@ func GetBoletoType(code string) utils.BoletoType {
 	code = utils.OnlyNumbers(code)
 
 	if code[len(code)-14:] == "00000000000000" || utils.Substr(code, 5, 14) == "00000000000000" {
-		return CreditCard
+		return utils.CreditCard
 	} else if utils.Substr(code, 0, 1) == "8" {
-		if utils.Substr(code, 1, 1) == "1" {
-			return CityHalls
-		} else if utils.Substr(code, 1, 1) == "2" {
-			return Sanitation
-		} else if utils.Substr(code, 1, 1) == "3" {
-			return ElectricityAndGas
-		} else if utils.Substr(code, 1, 1) == "4" {
-			return Telecommunications
-		} else if utils.Substr(code, 1, 1) == "5" {
-			return GovernmentAgencies
-		} else if utils.Substr(code, 1, 1) == "6" || utils.Substr(code, 1, 1) == "9" {
-			return PaymentBooklets
-		} else if utils.Substr(code, 1, 1) == "7" {
-			return TrafficFines
+		digit := utils.Substr(code, 1, 1)
+
+		switch digit {
+		case "1":
+			return utils.CityHalls
+		case "2":
+			return utils.Sanitation
+		case "3":
+			return utils.ElectricityAndGas
+		case "4":
+			return utils.Telecommunications
+		case "5":
+			return utils.GovernmentAgencies
+		case "6", "9":
+			return utils.PaymentBooklets
+		case "7":
+			return utils.TrafficFines
 		}
 	}
 
-	return Bank
+	return utils.Bank
 }
 
 func parseDigitableLine(line string) (*utils.Boleto, error) {

@@ -10,11 +10,7 @@ import (
 
 // test that input matches the value we want. If not, report an error on t.
 func testValue(t *testing.T, input string, want *utils.Boleto) {
-	v, err := Parse(input)
-
-	if err != nil {
-		t.Errorf("Parse(%v) returned an error: %v", input, err)
-	}
+	v, _ := Parse(input)
 
 	if diff := cmp.Diff(want, v); diff != "" {
 		t.Errorf("Parse(%v) mismatch:\n%s", input, diff)
@@ -204,6 +200,25 @@ func TestValues_Parse(t *testing.T) {
 				CodeType:          "BARCODE",
 			},
 		},
+		{input: "123456789",
+			want: nil,
+		},
+		{input: "42297 03006 00002 695286 04014 412722 8 76500000003720",
+			want: &utils.Boleto{IssuerBankCode: "422",
+				IssuerBankName:    "Banco Safra S.A.",
+				Currency:          9,
+				IssuerReserved1:   "70300",
+				CheckDigit1:       6,
+				IssuerReserved2:   "0000269528",
+				CheckDigit2:       6,
+				IssuerReserved3:   "0401441272",
+				CheckDigit3:       2,
+				GeneralCheckDigit: 8,
+				DueDate:           time.Date(2018, 9, 17, 0, 0, 0, 0, loc),
+				Amount:            37.2,
+				CodeType:          "DIGITABLE_LINE",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -217,23 +232,27 @@ func TestValues_GetBoletoType(t *testing.T) {
 		want  utils.BoletoType
 	}{
 		{"826700000035 645607980002 010002351038 822024116714",
-			utils.BoletoType("SANITATION"),
+			utils.Sanitation,
 		},
 		{
 			"836800000033 380600863225 535337514090 100168807509",
-			utils.BoletoType("ELECTRICITY_AND_GAS"),
+			utils.ElectricityAndGas,
 		},
 		{
 			"85860000000 4 83740385242 0 43070124241 5 85141630306 0",
-			utils.BoletoType("GOVERNMENT_AGENCIES"),
+			utils.GovernmentAgencies,
 		},
 		{
 			"856500000026 056505152027 411292024030 335182000000",
-			utils.BoletoType("GOVERNMENT_AGENCIES"),
+			utils.GovernmentAgencies,
 		},
 		{
 			"846800000008 550000791008 011193989719 924101544345",
-			utils.BoletoType("TELECOMMUNICATIONS"),
+			utils.Telecommunications,
+		},
+		{
+			input: "73990.00004 00001.223320 90126.130344400000000000000",
+			want:  utils.CreditCard,
 		},
 	}
 

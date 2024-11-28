@@ -5,6 +5,22 @@ import (
 	"strconv"
 )
 
+type BoletoCodeType string
+
+type BoletoType string
+
+const (
+	CreditCard         BoletoType = "CREDIT_CARD"
+	CityHalls          BoletoType = "CITY_HALLS"
+	Sanitation         BoletoType = "SANITATION"
+	ElectricityAndGas  BoletoType = "ELECTRICITY_AND_GAS"
+	Telecommunications BoletoType = "TELECOMMUNICATIONS"
+	GovernmentAgencies BoletoType = "GOVERNMENT_AGENCIES"
+	PaymentBooklets    BoletoType = "PAYMENT_BOOKLETS"
+	TrafficFines       BoletoType = "TRAFFIC_FINES"
+	Bank               BoletoType = "BANK"
+)
+
 // Substr returns the portion of string specified by the start and length parameters.
 func Substr(input string, start int, length int) string {
 	asRunes := []rune(input)
